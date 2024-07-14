@@ -4,7 +4,7 @@ namespace ProductStore.Infrastructure.Data.Repositories
 {
     public interface ICategoryRepository
     {
-        Task<IEnumerable<Category>> GetAllAsync();
+        Task<IReadOnlyCollection<Category>> GetAllAsync();
         Task AddAsync(Category category);
     }
 }

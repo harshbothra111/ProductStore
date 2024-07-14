@@ -12,7 +12,7 @@ namespace ProductStore.Infrastructure.Data.Repositories
             await context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<SubCategory>> GetAllAsync(int categoryId)
+        public async Task<IReadOnlyCollection<SubCategory>> GetAllAsync(int categoryId)
         {
             return await context.SubCategories.Where(x => x.CategoryId == categoryId).ToListAsync();
         }

@@ -1,6 +1,9 @@
-﻿namespace ProductStore.Application.Interfaces
+﻿using ProductStore.Domain.AggregateModels.ProductAggregate;
+
+namespace ProductStore.Application.Interfaces
 {
-    internal interface ICategoryService
+    public interface ISubCategoryService
     {
+        Task<IReadOnlyCollection<SubCategory>> GetSubCategoriesAsync(int categoryId);
     }
 }

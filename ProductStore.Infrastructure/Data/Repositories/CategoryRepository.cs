@@ -12,7 +12,7 @@ namespace ProductStore.Infrastructure.Data.Repositories
             await context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Category>> GetAllAsync()
+        public async Task<IReadOnlyCollection<Category>> GetAllAsync()
         {
             return await context.Categories.ToListAsync();
         }
