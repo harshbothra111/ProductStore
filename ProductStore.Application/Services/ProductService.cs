@@ -1,6 +1,6 @@
 ﻿using ProductStore.Application.DTOs;
 using ProductStore.Application.Interfaces;
-using ProductStore.Domain.Entities;
+using ProductStore.Domain.AggregateModels.ProductAggregate;
 using ProductStore.Infrastructure.Data.Repositories;
 
 namespace ProductStore.Application.Services
@@ -94,7 +94,7 @@ namespace ProductStore.Application.Services
             {
                 return null;
             }
-            var filePath = Path.Combine("wwwroot/images", Guid.NewGuid().ToString() + "_" + imageName);
+            var filePath = Path.Combine("Upload/Images", Guid.NewGuid().ToString() + "_" + imageName);
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 await imageStream.CopyToAsync(stream);

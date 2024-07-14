@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ProductStore.Domain.Entities;
+using ProductStore.Domain.AggregateModels.ProductAggregate;
 using ProductStore.Infrastructure.Data.Contexts;
 
 namespace ProductStore.Infrastructure.Data.Repositories
 {
-    public class CategoryRepository(ProductDbContext context) : ICategoryRepository
+    internal sealed class CategoryRepository(ProductDbContext context) : ICategoryRepository
     {
         public async Task AddAsync(Category category)
         {

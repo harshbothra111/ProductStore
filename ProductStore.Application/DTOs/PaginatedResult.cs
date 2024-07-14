@@ -8,7 +8,7 @@
         public int TotalRecords { get; set; }
         public IEnumerable<T> Data { get; set; } = [];
 
-        public bool HasPrevious => CurrentPage > 1;
-        public bool HasNext => CurrentPage < TotalPages;
+        public bool HasPrevious => CurrentPage > 0;
+        public bool HasNext => CurrentPage + 1 < TotalPages;
     }
 }

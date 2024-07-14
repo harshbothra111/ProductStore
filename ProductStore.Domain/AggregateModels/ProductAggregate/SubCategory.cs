@@ -1,4 +1,4 @@
-﻿namespace ProductStore.Domain.Entities
+﻿namespace ProductStore.Domain.AggregateModels.ProductAggregate
 {
     public class SubCategory
     {

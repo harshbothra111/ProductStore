@@ -1,10 +1,15 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using ProductStore.Application;
+using ProductStore.Infrastructure.Data;
+using ProductStore.Infrastructure.Data.Contexts;
+using System.Text.Json.Serialization;
 
 namespace ProductStore.Server
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -37,6 +42,22 @@ namespace ProductStore.Server
             app.MapControllers();
 
             app.MapFallbackToFile("/index.html");
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                try
+                {
+                    var context = services.GetRequiredService<ProductDbContext>();
+                    await context.Database.MigrateAsync();
+                    await Seed.SeedData(context);
+                }
+                catch (Exception ex)
+                {
+                    var logger = services.GetRequiredService<ILogger<Program>>();
+                    logger.LogError(ex, "An error occured during migration");
+                }
+            }
 
             app.Run();
         }

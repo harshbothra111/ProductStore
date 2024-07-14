@@ -1,4 +1,4 @@
-﻿using ProductStore.Domain.Entities;
+﻿using ProductStore.Domain.AggregateModels.ProductAggregate;
 
 namespace ProductStore.Infrastructure.Data.Repositories
 {

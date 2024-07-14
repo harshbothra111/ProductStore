@@ -1,4 +1,5 @@
 ﻿using ProductStore.Application.DTOs;
+using ProductStore.Domain.AggregateModels.ProductAggregate;
 
 namespace ProductStore.Application.Interfaces
 {

@@ -10,6 +10,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Data\SeedData\CategorySeedData.json" />
+    <Content Remove="Data\SeedData\ProductSeedData.json" />
+    <Content Remove="Data\SeedData\SubCategorySeedData.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.SpaProxy">
       <Version>8.*-*</Version>
     </PackageReference>
@@ -25,6 +31,17 @@
     <ProjectReference Include="..\productstore.client\productstore.client.esproj">
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Data\SeedData\CategorySeedData.json" />
+    <None Include="Data\SeedData\ProductSeedData.json" />
+    <None Include="Data\SeedData\SubCategorySeedData.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Contracts\" />
+    <Folder Include="Upload\Images\" />
   </ItemGroup>
 
 </Project>

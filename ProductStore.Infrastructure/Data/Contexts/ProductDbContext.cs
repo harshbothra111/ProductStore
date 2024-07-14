@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ProductStore.Domain.Entities;
+using ProductStore.Domain.AggregateModels.ProductAggregate;
 
 namespace ProductStore.Infrastructure.Data.Contexts
 {

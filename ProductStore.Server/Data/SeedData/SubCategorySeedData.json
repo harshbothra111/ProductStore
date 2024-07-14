@@ -1,0 +1,37 @@
+[
+  {
+    "id": 1,
+    "Name": "Tv",
+    "categoryId": 1
+  },
+  {
+    "id": 2,
+    "Name": "Mobile",
+    "categoryId": 1
+  },
+  {
+    "id": 3,
+    "Name": "Refrigerator",
+    "categoryId": 1
+  },
+  {
+    "id": 4,
+    "Name": "Men’s Cloth",
+    "categoryId": 2
+  },
+  {
+    "id": 5,
+    "Name": "Women’s Cloth",
+    "categoryId": 2
+  },
+  {
+    "id": 6,
+    "Name": "Men’s Footwear",
+    "categoryId": 3
+  },
+  {
+    "id": 7,
+    "Name": "Kid’s Footwear",
+    "categoryId": 3
+  }
+]
