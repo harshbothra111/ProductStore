@@ -8,11 +8,8 @@ namespace ProductStore.Infrastructure.Data.Repositories
 {
     internal sealed class ProductRepository(ProductDbContext context, ILogger<ProductRepository> logger) : IProductRepository
     {
-        private const int MaxPageSize = 5;
         public async Task<IEnumerable<Product>> GetAllAsync(int subCategoryId, int pageNumber, int pageSize)
         {
-            if(pageSize == 0) pageSize = MaxPageSize;
-            if(pageSize > 5) pageSize = MaxPageSize;
             var query = context.Products
                 .Include(p => p.Category)
                 .Include(p => p.SubCategory)
