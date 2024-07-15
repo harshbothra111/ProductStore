@@ -10,21 +10,16 @@ namespace ProductStore.Infrastructure.Data.Repositories
     {
         public async Task<IEnumerable<Product>> GetAllAsync(int subCategoryId, int pageNumber, int pageSize)
         {
-            if (subCategoryId == 0)
+            var query = context.Products
+                .Include(p => p.Category)
+                .Include(p => p.SubCategory)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize);
+            if (subCategoryId != 0)
             {
-                return await context.Products.Where(x => x.SubCategoryId == subCategoryId)
-                .Include(p => p.Category)
-                .Include(p => p.SubCategory)
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
+                return query.Where(p => p.SubCategoryId == subCategoryId);
             }
-            return await context.Products
-                .Include(p => p.Category)
-                .Include(p => p.SubCategory)
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
+            return await query.ToListAsync();
         }
 
         public async Task<int> GetTotalRecordsAsync()
