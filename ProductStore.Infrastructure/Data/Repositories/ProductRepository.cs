@@ -8,8 +8,17 @@ namespace ProductStore.Infrastructure.Data.Repositories
 {
     internal sealed class ProductRepository(ProductDbContext context, ILogger<ProductRepository> logger) : IProductRepository
     {
-        public async Task<IEnumerable<Product>> GetAllAsync(int pageNumber, int pageSize)
+        public async Task<IEnumerable<Product>> GetAllAsync(int subCategoryId, int pageNumber, int pageSize)
         {
+            if (subCategoryId == 0)
+            {
+                return await context.Products.Where(x => x.SubCategoryId == subCategoryId)
+                .Include(p => p.Category)
+                .Include(p => p.SubCategory)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+            }
             return await context.Products
                 .Include(p => p.Category)
                 .Include(p => p.SubCategory)

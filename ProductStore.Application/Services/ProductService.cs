@@ -8,9 +8,9 @@ namespace ProductStore.Application.Services
 {
     public class ProductService(IProductRepository productRepository) : IProductService
     {
-        public async Task<PaginatedResult<ProductDto>> GetAllProductsAsync(PaginationQuery paginationQuery)
+        public async Task<PaginatedResult<ProductDto>> GetAllProductsAsync(int subCategoryId, PaginationQuery paginationQuery)
         {
-            var products = await productRepository.GetAllAsync(paginationQuery.PageNumber, paginationQuery.PageSize);
+            var products = await productRepository.GetAllAsync(subCategoryId, paginationQuery.PageNumber, paginationQuery.PageSize);
             var totalRecords = await productRepository.GetTotalRecordsAsync();
             var productDtos = products.Select(p => new ProductDto
             {
