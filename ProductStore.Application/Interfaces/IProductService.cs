@@ -7,8 +7,8 @@ namespace ProductStore.Application.Interfaces
     {
         Task<PaginatedResult<ProductDto>> GetAllProductsAsync(PaginationQuery paginationQuery);
         Task<ProductDto> GetProductByIdAsync(int id);
-        Task AddProductAsync(ProductDto productDto, Stream imageStream, string? imageName);
-        Task UpdateProductAsync(ProductDto productDto, Stream imageStream, string? imageName);
+        Task<ProductDto> AddProductAsync(ProductDto productDto, Stream? imageStream, string? imageName);
+        Task<ProductDto> UpdateProductAsync(ProductDto productDto, Stream? imageStream, string? imageName);
         Task DeleteProductAsync(int id);
     }
 }

@@ -1,10 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using ProductStore.Domain.AggregateModels.ProductAggregate;
 using ProductStore.Infrastructure.Data.Contexts;
+using ProductStore.Infrastructure.Data.Exceptions;
 
 namespace ProductStore.Infrastructure.Data.Repositories
 {
-    internal sealed class ProductRepository(ProductDbContext context) : IProductRepository
+    internal sealed class ProductRepository(ProductDbContext context, ILogger<ProductRepository> logger) : IProductRepository
     {
         public async Task<IEnumerable<Product>> GetAllAsync(int pageNumber, int pageSize)
         {
@@ -29,16 +31,33 @@ namespace ProductStore.Infrastructure.Data.Repositories
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
 
-        public async Task AddAsync(Product product)
+        public async Task<int> AddAsync(Product product)
         {
-            context.Products.Add(product);
-            await context.SaveChangesAsync();
+            try
+            {
+                context.Products.Add(product);
+                await context.SaveChangesAsync();
+                return product.Id;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Unable to add Product");
+                throw new DatabaseException("Unable to add Product");
+            }
         }
 
         public async Task UpdateAsync(Product product)
         {
-            context.Products.Update(product);
-            await context.SaveChangesAsync();
+            try
+            {
+                context.Products.Update(product);
+                await context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Unable to update Product for Id: {id}", product.Id);
+                throw new DatabaseException($"Unable to upate Product for Id: {product.Id}");
+            }
         }
 
         public async Task DeleteAsync(Product product)

@@ -1,6 +1,7 @@
 ﻿using ProductStore.Application.DTOs;
 using ProductStore.Application.Interfaces;
 using ProductStore.Domain.AggregateModels.ProductAggregate;
+using ProductStore.Domain.AggregateModels.ProductAggregate.Exceptions;
 using ProductStore.Infrastructure.Data.Repositories;
 
 namespace ProductStore.Application.Services
@@ -36,7 +37,9 @@ namespace ProductStore.Application.Services
         public async Task<ProductDto> GetProductByIdAsync(int id)
         {
             var product = await productRepository.GetByIdAsync(id);
-            return new ProductDto
+            return product is null
+                ? throw new ProductNotFoundException($"Product not found for the given id: {id}")
+                : new ProductDto
             {
                 Id = product.Id,
                 Name = product.Name,
@@ -50,7 +53,7 @@ namespace ProductStore.Application.Services
             };
         }
 
-        public async Task AddProductAsync(ProductDto productDto, Stream imageStream, string? imageName)
+        public async Task<ProductDto> AddProductAsync(ProductDto productDto, Stream? imageStream, string? imageName)
         {
             var product = new Product
             {
@@ -63,12 +66,13 @@ namespace ProductStore.Application.Services
                 CategoryId = productDto.CategoryId,
                 SubCategoryId = productDto.SubCategoryId
             };
-            await productRepository.AddAsync(product);
+            productDto.Id = await productRepository.AddAsync(product);
+            return productDto;
         }
 
-        public async Task UpdateProductAsync(ProductDto productDto, Stream imageStream, string? imageName)
+        public async Task<ProductDto> UpdateProductAsync(ProductDto productDto, Stream? imageStream, string? imageName)
         {
-            var product = await productRepository.GetByIdAsync(productDto.Id);
+            var product = await productRepository.GetByIdAsync(productDto.Id) ?? throw new ProductNotFoundException($"Product not found for the given id: {productDto.Id}");
             product.Name = productDto.Name;
             product.Quantity = productDto.Quantity;
             product.Code = productDto.Code;
@@ -80,15 +84,16 @@ namespace ProductStore.Application.Services
                 product.ImageUrl = imageUrl;
             }
             await productRepository.UpdateAsync(product);
+            return productDto;
         }
 
         public async Task DeleteProductAsync(int id)
         {
-            var product = await productRepository.GetByIdAsync(id);
+            var product = await productRepository.GetByIdAsync(id) ?? throw new ProductNotFoundException($"Product not found for the given id: {id}");
             await productRepository.DeleteAsync(product);
         }
 
-        private static async Task<string?> SaveImageAsync(Stream imageStream, string? imageName)
+        private static async Task<string?> SaveImageAsync(Stream? imageStream, string? imageName)
         {
             if (imageStream is null || string.IsNullOrEmpty(imageName))
             {
