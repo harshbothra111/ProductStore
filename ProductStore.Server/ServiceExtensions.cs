@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using ProductStore.Server.AppStart;
 using ProductStore.Server.Converters;
+using ProductStore.Server.Middlewares;
 using ProductStore.Server.Validators;
 
 namespace ProductStore.Server
@@ -12,6 +13,7 @@ namespace ProductStore.Server
             services.AddScoped<IResponseMessagesBuilder, ResponseMessagesBuilder>();
             services.AddValidatorsFromAssemblyContaining<ProductValidator>();
             services.ConfigureOptions<ApiJsonOptions>();
+            services.AddMiddlewares();
         }
     }
 }

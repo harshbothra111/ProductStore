@@ -1,9 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
 using ProductStore.Application;
 using ProductStore.Infrastructure.Data;
 using ProductStore.Infrastructure.Data.Contexts;
-using System.Text.Json.Serialization;
 
 namespace ProductStore.Server
 {
@@ -18,6 +16,7 @@ namespace ProductStore.Server
             builder.Services.AddApplicationServices(builder.Configuration);
             builder.Services.AddServerServices();
             builder.Services.AddControllers();
+            builder.Services.AddApplicationInsightsTelemetry();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
