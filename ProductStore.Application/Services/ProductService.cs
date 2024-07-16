@@ -1,5 +1,6 @@
 ﻿using ProductStore.Application.DTOs;
 using ProductStore.Application.Interfaces;
+using ProductStore.Domain;
 using ProductStore.Domain.AggregateModels.ProductAggregate;
 using ProductStore.Domain.AggregateModels.ProductAggregate.Exceptions;
 using ProductStore.Infrastructure.Data.Repositories;
@@ -8,19 +9,10 @@ namespace ProductStore.Application.Services
 {
     public class ProductService(IProductRepository productRepository) : IProductService
     {
-        private const int MaxPageSize = 5;
         public async Task<PaginatedResult<ProductDto>> GetAllProductsAsync(int categoryId, int subCategoryId, PaginationQuery paginationQuery)
         {
-            int pageSize = paginationQuery.PageSize;
-            if (pageSize == 0) pageSize = MaxPageSize;
-            if (pageSize > 5) pageSize = MaxPageSize;
-            paginationQuery.PageSize = pageSize;
-            var totalRecords = await productRepository.GetTotalRecordsAsync();
-            int totalPages = (int)Math.Ceiling((double)totalRecords / paginationQuery.PageSize);
-            if (paginationQuery.PageNumber < 0) paginationQuery.PageNumber = 0;
-            if (paginationQuery.PageNumber >= totalPages) paginationQuery.PageNumber = totalPages - 1;
             var products = await productRepository.GetAllAsync(categoryId, subCategoryId, paginationQuery.PageNumber, paginationQuery.PageSize);
-            var productDtos = products.Select(p => new ProductDto
+            var productDtos = products.Data.Select(p => new ProductDto
             {
                 Id = p.Id,
                 Name = p.Name,
@@ -35,10 +27,10 @@ namespace ProductStore.Application.Services
             return new PaginatedResult<ProductDto>
             {
                 Data = productDtos,
-                CurrentPage = paginationQuery.PageNumber,
-                PageSize = paginationQuery.PageSize,
-                TotalRecords = totalRecords,
-                TotalPages = totalPages
+                CurrentPage = products.CurrentPage,
+                PageSize = products.PageSize,
+                TotalPages = products.TotalPages,
+                TotalRecords = products.TotalRecords
             };
         }
 

@@ -1,4 +1,4 @@
-﻿namespace ProductStore.Application.DTOs
+﻿namespace ProductStore.Domain
 {
     public class PaginatedResult<T>
     {

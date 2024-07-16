@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using ProductStore.Domain;
 using ProductStore.Domain.AggregateModels.ProductAggregate;
 using ProductStore.Infrastructure.Data.Contexts;
 using ProductStore.Infrastructure.Data.Exceptions;
@@ -8,13 +9,14 @@ namespace ProductStore.Infrastructure.Data.Repositories
 {
     internal sealed class ProductRepository(ProductDbContext context, ILogger<ProductRepository> logger) : IProductRepository
     {
-        public async Task<IEnumerable<Product>> GetAllAsync(int categoryId, int subCategoryId, int pageNumber, int pageSize)
+        private const int MaxPageSize = 5;
+        public async Task<PaginatedResult<Product>> GetAllAsync(int categoryId, int subCategoryId, int pageNumber, int pageSize)
         {
+            if (pageSize == 0) pageSize = MaxPageSize;
+            if (pageSize > 5) pageSize = MaxPageSize;
             var query = context.Products
                 .Include(p => p.Category)
-                .Include(p => p.SubCategory)
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize);
+                .Include(p => p.SubCategory).AsQueryable();
             if (categoryId != 0)
             {
                 query = query.Where(p => p.CategoryId == categoryId);
@@ -23,7 +25,19 @@ namespace ProductStore.Infrastructure.Data.Repositories
             {
                 query = query.Where(p => p.SubCategoryId == subCategoryId);
             }
-            return await query.ToListAsync();
+            var totalRecords = await query.CountAsync();
+            int totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
+            if (pageNumber < 0) pageNumber = 0;
+            if (pageNumber >= totalPages) pageNumber = totalPages - 1;
+            var products = await query.Skip(pageNumber * pageSize).Take(pageSize).ToListAsync();
+            return new PaginatedResult<Product>()
+            {
+                Data = products,
+                TotalRecords = totalRecords,
+                CurrentPage = pageNumber,
+                PageSize = pageSize,
+                TotalPages = totalPages,
+            };
         }
 
         public async Task<int> GetTotalRecordsAsync()
