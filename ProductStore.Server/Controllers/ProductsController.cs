@@ -15,9 +15,9 @@ namespace ProductStore.Server.Controllers
         private readonly IProductService _productService = productService;
 
         [HttpGet]
-        public async Task<IActionResult> GetAllProducts([FromQuery]int subCategoryId,[FromQuery] PaginationQuery paginationQuery)
+        public async Task<IActionResult> GetAllProducts([FromQuery] int categoryId, [FromQuery]int subCategoryId,[FromQuery] PaginationQuery paginationQuery)
         {
-            var products = await _productService.GetAllProductsAsync(subCategoryId,paginationQuery);
+            var products = await _productService.GetAllProductsAsync(categoryId, subCategoryId, paginationQuery);
             return Ok(products);
         }
 

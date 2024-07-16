@@ -9,7 +9,7 @@ namespace ProductStore.Application.Services
     public class ProductService(IProductRepository productRepository) : IProductService
     {
         private const int MaxPageSize = 5;
-        public async Task<PaginatedResult<ProductDto>> GetAllProductsAsync(int subCategoryId, PaginationQuery paginationQuery)
+        public async Task<PaginatedResult<ProductDto>> GetAllProductsAsync(int categoryId, int subCategoryId, PaginationQuery paginationQuery)
         {
             int pageSize = paginationQuery.PageSize;
             if (pageSize == 0) pageSize = MaxPageSize;
@@ -19,7 +19,7 @@ namespace ProductStore.Application.Services
             int totalPages = (int)Math.Ceiling((double)totalRecords / paginationQuery.PageSize);
             if (paginationQuery.PageNumber < 0) paginationQuery.PageNumber = 0;
             if (paginationQuery.PageNumber >= totalPages) paginationQuery.PageNumber = totalPages - 1;
-            var products = await productRepository.GetAllAsync(subCategoryId, paginationQuery.PageNumber, paginationQuery.PageSize);
+            var products = await productRepository.GetAllAsync(categoryId, subCategoryId, paginationQuery.PageNumber, paginationQuery.PageSize);
             var productDtos = products.Select(p => new ProductDto
             {
                 Id = p.Id,
@@ -38,7 +38,7 @@ namespace ProductStore.Application.Services
                 CurrentPage = paginationQuery.PageNumber,
                 PageSize = paginationQuery.PageSize,
                 TotalRecords = totalRecords,
-                TotalPages = (int)Math.Ceiling((double)totalRecords / paginationQuery.PageSize)
+                TotalPages = totalPages
             };
         }
 
