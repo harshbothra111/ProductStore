@@ -9,8 +9,6 @@ interface CategorySelectProps {
     onSubCategoryChange: (subCategoryId: number | null) => void;
 }
 
-const baseApiUrl = 'https://localhost:7048';
-
 const CategorySelect: React.FC<CategorySelectProps> = ({ onCategoryChange, onSubCategoryChange }) => {
     const [categories, setCategories] = useState<Category[]>([]);
     const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
@@ -30,7 +28,7 @@ const CategorySelect: React.FC<CategorySelectProps> = ({ onCategoryChange, onSub
 
     const fetchCategories = async () => {
         try {
-            const response = await axios.get<Category[]>(baseApiUrl + '/api/categories');
+            const response = await axios.get<Category[]>('/api/categories');
             setCategories(response.data);
         } catch (error) {
             console.error('Error fetching categories:', error);
@@ -39,7 +37,7 @@ const CategorySelect: React.FC<CategorySelectProps> = ({ onCategoryChange, onSub
 
     const fetchSubCategories = async (categoryId: number) => {
         try {
-            const response = await axios.get<SubCategory[]>(`${baseApiUrl}/api/categories/${categoryId}/subcategories`);
+            const response = await axios.get<SubCategory[]>(`/api/categories/${categoryId}/subcategories`);
             setSubCategories(response.data);
         } catch (error) {
             console.error('Error fetching subcategories:', error);

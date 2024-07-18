@@ -67,6 +67,7 @@ namespace ProductStore.Application.Services
                 SubCategoryId = productDto.SubCategoryId
             };
             productDto.Id = await productRepository.AddAsync(product);
+            productDto.ImageUrl = product.ImageUrl;
             return productDto;
         }
 
@@ -99,8 +100,8 @@ namespace ProductStore.Application.Services
             {
                 return null;
             }
-            var filePath = Path.Combine("Upload/Images", Guid.NewGuid().ToString() + "_" + imageName);
-            using (var stream = new FileStream(filePath, FileMode.Create))
+            var filePath = $"Images/{Guid.NewGuid()}_{imageName}";
+            using (var stream = new FileStream($"wwwroot/{filePath}", FileMode.Create))
             {
                 await imageStream.CopyToAsync(stream);
             }

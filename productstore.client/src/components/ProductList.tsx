@@ -14,6 +14,8 @@ const ProductList: React.FC<ProductListProps> = ({ categoryId, subCategoryId }) 
     const [products, setProducts] = useState<Product[]>([]);
     const [pageNumber, setPage] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
+    const [hasNext, enableNext] = useState(false);
+    const [hasPrevious, enablePrevious] = useState(false);
 
     useEffect(() => {
         fetchProducts();
@@ -25,9 +27,11 @@ const ProductList: React.FC<ProductListProps> = ({ categoryId, subCategoryId }) 
         if (subCategoryId !== null) params.subCategoryId = subCategoryId;
 
         try {
-            const response = await axios.get<PaginationResponse<Product>>(baseApiUrl + 'api/products', { params });
+            const response = await axios.get<PaginationResponse<Product>>('api/Products', { params });
             setProducts(response.data.data);
             setTotalPages(response.data.totalPages);
+            enableNext(response.data.hasNext);
+            enablePrevious(response.data.hasPrevious);
         } catch (error) {
             console.error('Error fetching products:', error);
         }
@@ -54,7 +58,7 @@ const ProductList: React.FC<ProductListProps> = ({ categoryId, subCategoryId }) 
                             <td>{product.code}</td>
                             <td>{product.price}</td>
                             <td>{product.description}</td>
-                            <td><img src={baseApiUrl + product.imageUrl} alt={product.name} width="50" /></td>
+                            <td><img src={"/" + product.imageUrl} alt={product.name} width="50" /></td>
                         </tr>
                     ))}
                 </tbody>
@@ -62,11 +66,11 @@ const ProductList: React.FC<ProductListProps> = ({ categoryId, subCategoryId }) 
             <div>
                 <nav aria-label="Page navigation example">
                     <ul className="pagination justify-content-center">
-                        <li className={`page-item ${(pageNumber === 0) ? 'disabled' : ''}`} onClick={() => setPage(pageNumber - 1)}>
+                        <li className={`page-item ${ hasPrevious ? '' : 'disabled'}`} onClick={() => setPage(pageNumber - 1)}>
                             <a className="page-link" href="#">Previous</a>
                         </li>
                         <li className="page-item"><a className="page-link" href="#">Page {pageNumber + 1} of {totalPages}</a></li>
-                        <li className={`page-item ${(pageNumber + 1 === totalPages) ? 'disabled' : ''}`} onClick={() => setPage(pageNumber + 1)}>
+                        <li className={`page-item ${ hasNext ? '' : 'disabled'}`} onClick={() => setPage(pageNumber + 1)}>
                             <a className="page-link" href="#">Next</a>
                         </li>
                     </ul>
